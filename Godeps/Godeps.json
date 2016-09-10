@@ -1,0 +1,6 @@
+{
+	"ImportPath": "github.com/SurgeNews/SurgeServer",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v70",
+	"Deps": []
+}
