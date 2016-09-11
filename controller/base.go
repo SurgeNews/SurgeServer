@@ -46,6 +46,8 @@ func signUp(c *gin.Context) {
 	var loginCmd LoginCommand
     c.BindJSON(&loginCmd)
     
+    fmt.Println(loginCmd.Username, loginCmd.Password)
+
     token,err := model.AddUser(loginCmd.Username, loginCmd.Password)
     
     if err==nil && token!="" {
