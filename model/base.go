@@ -7,6 +7,7 @@ import (
     jwt "github.com/dgrijalva/jwt-go"
     // "github.com/satori/go.uuid"
     "fmt"
+    "time"
     //"bytes"
     // "time"
     //"errors"
@@ -14,7 +15,7 @@ import (
 
 const TypedHello string = "Hello, 世界"
 var db *gorm.DB
-
+var hmacSampleSecret = []byte("Hello世界")
 type News struct {
     gorm.Model
     Title    string `gorm:"size:255"`
@@ -134,32 +135,39 @@ func AuthoriseUser(userName string, userPassword string) (string, error) {
 
 
 func (u *User) createToken() (tokenString string,err error) {
-    claims := &jwt.StandardClaims{
-        ExpiresAt: 15000,
-        Issuer: u.Name,
-    }
-    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-    tokenString, err = token.SignedString([]byte("darksecret"))
+    // claims := &jwt.StandardClaims{
+    //     ExpiresAt: 15000,
+    //     Issuer: u.Name,
+    // }
+    // token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    // tokenString, err = token.SignedString([]byte("darksecret"))
 
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+        "userId": u.Name,
+        "creationTime": time.Now().Unix(),
+    })
+
+    // Sign and get the complete encoded token as a string using the secret
+    tokenString, err = token.SignedString(hmacSampleSecret)
     return tokenString, err
 }
 
 
 func ValidateToken(tokenString string) User {
-
-return User{}
-    // token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-    //     // Don't forget to validate the alg is what you expect:
-    //     if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-    //         return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-    //     }
-    //     return hmacSampleSecret, nil
-    // })
-
-    // if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-    //     fmt.Println(claims["Issuer"])
-    // } else {
-    //     fmt.Println(err)
-    // }
-
+    fmt.Println("------------ ******  ", tokenString);
+    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        fmt.Println("------------ claims[userId]")
+        // Don't forget to validate the alg is what you expect:
+        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+            return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+        }
+        return hmacSampleSecret, nil
+    })
+     fmt.Println("------------ tokenString")
+    if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+        fmt.Println(claims["userId"])
+    } else {
+        fmt.Println(err)
+    }
+    return User{}
 }

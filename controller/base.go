@@ -71,6 +71,8 @@ func signIn(c *gin.Context) {
 }
 
 func uploadAudio(c *gin.Context) {
+	var token  =  c.Request.Header["Xtoken"][0]
+	model.ValidateToken(token)
 	fmt.Println(c.Request.Header["Xtoken"])
 	file, header , err := c.Request.FormFile("filename")
 	filename := header.Filename
@@ -84,5 +86,7 @@ func uploadAudio(c *gin.Context) {
 	if err != nil {
 	    log.Fatal(err)
 	}   
+
+	model.S3Upload("tmp/"+filename)
 }
 
