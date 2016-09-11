@@ -34,7 +34,7 @@ func init() {
 	{
 		v1.POST("/user/signUp/", signUp)
 		v1.POST("/user/signIn/", signIn)
-		v1.POST("/audio/upload", uploadAudio)
+		v1.POST("/audio/upload/", uploadAudio)
 	}
 
 	Server.GET("/", func(c *gin.Context) {
@@ -88,10 +88,10 @@ func uploadAudio(c *gin.Context) {
 	_, err = io.Copy(out, file)
 	if err == nil {
 		go model.S3Upload("tmp/"+filename)
-	    c.JSON (http.StatusOK, gin.H{"success":true})
+	    c.JSON (http.StatusOK, gin.H{"Success":true})
 	    return
 	}   
 
-	c.JSON (http.StatusOK, gin.H{"success":false})
+	c.JSON (http.StatusOK, gin.H{"Success":false})
 }
 
