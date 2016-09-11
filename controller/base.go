@@ -74,9 +74,9 @@ func signIn(c *gin.Context) {
 }
 
 func uploadAudio(c *gin.Context) {
-	var token  =  c.Request.Header["Xtoken"][0]
-	model.ValidateToken(token)
-	fmt.Println(c.Request.Header["Xtoken"])
+//	var token  =  c.Request.Header["Xtoken"][0]
+//	model.ValidateToken(token)
+//	fmt.Println(c.Request.Header["Xtoken"])
 	file, header , err := c.Request.FormFile("filename")
 	filename := header.Filename
 	fmt.Println(header.Filename)
