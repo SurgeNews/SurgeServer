@@ -21,8 +21,8 @@ type SiginResponse struct {
 
 
 type LoginCommand struct {
-    Username string `json:"username" form:"username" binding:"required"`
-    Password string `json:"password" form:"password" binding:"password`
+    Username string `json:"username"`
+    Password string `json:"password"`
 }
 
 func init() {
@@ -45,11 +45,10 @@ func init() {
 func signUp(c *gin.Context) {
 	var loginCmd LoginCommand
     c.BindJSON(&loginCmd)
-    user := c.PostForm("username")
-password := c.PostForm("password")
-    fmt.Println(user, password)
+    
+    fmt.Println(loginCmd.Username, loginCmd.Password)
 
-    token,err := model.AddUser(user, password)
+    token,err := model.AddUser(loginCmd.Username, loginCmd.Password)
     
     if err==nil && token!="" {
     	c.JSON (http.StatusOK, SiginResponse{true, token} )
