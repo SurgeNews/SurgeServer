@@ -5,9 +5,10 @@ import (
     _"github.com/jinzhu/gorm/dialects/sqlite"
     "golang.org/x/crypto/bcrypt"
     jwt "github.com/dgrijalva/jwt-go"
-    // "github.com/satori/go.uuid"
+   // "encoding/base64"
     "fmt"
     "time"
+   // "crypto/sha1"
     //"bytes"
     // "time"
     //"errors"
@@ -20,6 +21,7 @@ type News struct {
     gorm.Model
     Title    string `gorm:"size:255"`
     URL      string
+    Source   string
     Hash    string `gorm:"size:255"`
     Audios []Audio
 }
@@ -135,13 +137,6 @@ func AuthoriseUser(userName string, userPassword string) (string, error) {
 
 
 func (u *User) createToken() (tokenString string,err error) {
-    // claims := &jwt.StandardClaims{
-    //     ExpiresAt: 15000,
-    //     Issuer: u.Name,
-    // }
-    // token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-    // tokenString, err = token.SignedString([]byte("darksecret"))
-
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
         "userId": u.Name,
         "creationTime": time.Now().Unix(),
@@ -154,16 +149,13 @@ func (u *User) createToken() (tokenString string,err error) {
 
 
 func ValidateToken(tokenString string) User {
-    fmt.Println("------------ ******  ", tokenString);
     token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-        fmt.Println("------------ claims[userId]")
         // Don't forget to validate the alg is what you expect:
         if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
             return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
         }
         return hmacSampleSecret, nil
     })
-     fmt.Println("------------ tokenString")
     if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
         fmt.Println(claims["userId"])
     } else {
@@ -171,3 +163,16 @@ func ValidateToken(tokenString string) User {
     }
     return User{}
 }
+
+func (n *News) Save() {
+    db.Debug().Set("gorm:save_associations", true).Create(n)
+}
+
+// func (n *News) BeforeCreate() (err error) {
+//     bv:=[]byte(n.URL)
+//     hasher := sha1.New()
+//     hasher.Write(bv)
+//     n.Hash = base64.EncodeToString(hasher.Sum(nil))
+//     return
+// }
+

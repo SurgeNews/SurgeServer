@@ -86,10 +86,12 @@ func uploadAudio(c *gin.Context) {
 	}
 	defer out.Close()
 	_, err = io.Copy(out, file)
-	if err != nil {
-	    log.Fatal(err)
+	if err == nil {
+		go model.S3Upload("tmp/"+filename)
+	    c.JSON (http.StatusOK, gin.H{"success":true})
+	    return
 	}   
 
-	model.S3Upload("tmp/"+filename)
+	c.JSON (http.StatusOK, gin.H{"success":false})
 }
 
