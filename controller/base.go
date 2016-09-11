@@ -21,8 +21,8 @@ type SiginResponse struct {
 
 
 type LoginCommand struct {
-    Username string `json:"username"`
-    Password string `json:"password"`
+    Username string `json:"username" form:"username" binding:"required"`
+    Password string `json:"password" form:"password" binding:"password`
 }
 
 func init() {
