@@ -10,16 +10,12 @@ Build & run with:
 package main
 
 import (
-	// "bitbucket.org/200Success/prodscope/workers/models"
-	// "crypto/tls"
-	// ph "github.com/souravray/goHuntIt"
-	// "labix.org/v2/mgo"
-	// "labix.org/v2/mgo/bson"
-	// "log"
-	// "net/http"
-	// "strconv"
-	// "sync"
-	// "time"
+	"crypto/tls"
+	"log"
+	"net/http"
+	"strconv"
+	"sync"
+	"time"
 )
 
 const (
@@ -62,17 +58,9 @@ func main() {
 		case <-timer.C: // time-out condition
 			m.Lock()
 			x = false
-			err := phClient.ClientOnlyAuth() // renew bearer token
-			if err != nil {                  // on renew failure
-				timer.Stop()
-				ticker.Stop()
-				l = false // abort operation
-				log.Fatalf("\n\tAborting : %+v\n", err)
-			} else { // on renew success
-				timer.Stop()
-				// set timer for next token expiry
-				timer = time.NewTimer(time.Second * time.Duration(phClient.ExpirySec-60))
-			}
+			timer.Stop()
+			// set timer for next token expiry
+			timer = time.NewTimer(time.Second * time.Duration(phClient.ExpirySec-60))
 			x = true
 			c.Broadcast()
 			m.Unlock()

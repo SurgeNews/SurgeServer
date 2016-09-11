@@ -9,6 +9,7 @@ import (
 	"os"
 	"io"
 	"log"
+	"time"
 )
 
 
@@ -34,7 +35,6 @@ func init() {
 	{
 		v1.POST("/user/signUp/", signUp)
 		v1.POST("/user/signIn/", signIn)
-
 		v1.POST("/audio/upload", uploadAudio)
 	}
 
@@ -60,6 +60,8 @@ func signUp(c *gin.Context) {
 func signIn(c *gin.Context) {
 	var loginCmd LoginCommand
     c.BindJSON(&loginCmd)
+
+    fmt.Println(loginCmd.Username, loginCmd.Password)
     token,err := model.AuthoriseUser(loginCmd.Username, loginCmd.Password)
 
     if err==nil && token!=""{
