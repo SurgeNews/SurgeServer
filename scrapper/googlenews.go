@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"log"
 	"github.com/PuerkitoBio/goquery"
+	model "github.com/SurgeNews/SurgeServer/model"
 )
 
 type Client struct {
@@ -48,11 +49,16 @@ func (self *Client) Request( index int) error {
 
 	// Find the review items
 	doc.Find(".esc-layout-article-cell").Each(func(i int, s *goquery.Selection) {
+		
 	    // For each item found, get the band and title
-	    band := s.Find("a").Text()
-	    title := s.Find("h2").Text()
-	    fmt.Printf("Review %d: %s - %s\n", i, band, title)
+	    link,_ := s.Find("a").Attr("href")
+	    title := s.Find(".esc-lead-article-title span").Text()
+	    source := s.Find(".al-attribution-source").Text()
+	    // title := s.Find("h2").Text()
+	    fmt.Printf("Review %d: %s \n %s\n\t\t %s\n\n", i, link, title, source)
 	})
+
+
 
 	return nil
 }

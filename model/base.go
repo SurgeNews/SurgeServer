@@ -5,10 +5,10 @@ import (
     _"github.com/jinzhu/gorm/dialects/sqlite"
     "golang.org/x/crypto/bcrypt"
     jwt "github.com/dgrijalva/jwt-go"
-   // "encoding/base64"
+   "encoding/base64"
     "fmt"
     "time"
-   // "crypto/sha1"
+   "crypto/sha1"
     //"bytes"
     // "time"
     //"errors"
@@ -168,11 +168,11 @@ func (n *News) Save() {
     db.Debug().Set("gorm:save_associations", true).Create(n)
 }
 
-// func (n *News) BeforeCreate() (err error) {
-//     bv:=[]byte(n.URL)
-//     hasher := sha1.New()
-//     hasher.Write(bv)
-//     n.Hash = base64.EncodeToString(hasher.Sum(nil))
-//     return
-// }
+func (n *News) BeforeCreate() (err error) {
+    bv:=[]byte(n.URL)
+    hasher := sha1.New()
+    hasher.Write(bv)
+    n.Hash = base64.StdEncoding.EncodeToString(hasher.Sum(nil))
+    return
+}
 

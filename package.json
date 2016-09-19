@@ -1,0 +1,10 @@
+{
+  "name": "readable",
+  "version": "0.0.1",
+	"description": "A command-line tool for creating Readable news.",
+	"entry point": "index.js",
+	"license": "Apache-2.0",
+	"bin": {
+   "snippet": "./index.js"
+  }
+}

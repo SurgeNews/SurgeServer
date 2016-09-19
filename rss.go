@@ -10,6 +10,7 @@ Build & run with:
 package main
 
 import (
+ 	"github.com/SurgeNews/SurgeServer/scrapper"
 	"crypto/tls"
 	"log"
 	"net/http"
